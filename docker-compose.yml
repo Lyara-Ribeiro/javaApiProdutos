@@ -1,0 +1,26 @@
+#Configurando uma rede para conectar os conteiners
+networks:
+  apiprodutos-network: #nome da rede
+     driver: bridge #rede do tipo compartilhada
+#Configurando os serviços / conteiners
+services:
+  api-produtos: #servidor/conteiner para execução do projeto
+     build:
+        context: . #raiz do projeto
+        dockerfile: Dockerfile #nome do arquivo de configuração
+     ports:
+        - "8082:8082" #porta externa : porta interna
+     networks:
+        - apiprodutos-network #rede compartilhada
+     depends_on:
+        - postgres
+  postgres: #servidor/conteiner para execução do banco de dados
+     image: postgres:latest #instalando a versão maos recente do postgre
+     environment: #configurações de ambiente para criação do servidor
+        POSTGRES_USER: postgres #usuário do postgre
+        POSTGRES_PASSWORD: coti #senha do usuário
+        POSTGRES_DB: bd_apiprodutos #nome do banco de dados
+     ports:
+        - "5432:5432" #porta de execução do servidor
+     networks:
+        - apiprodutos-network #rede compartilhada
